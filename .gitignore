@@ -18,6 +18,7 @@ data/
 *.zip
 .env
 .env.local
+*.env
 
 # Dossier de travail temporaire
 _incoming/
