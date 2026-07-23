@@ -1,0 +1,24 @@
+# Configuration de déploiement pour Render.com (plan GRATUIT).
+# Tu peux importer ce fichier via « New + » → « Blueprint » sur Render,
+# ou simplement recopier ces réglages en créant un « Web Service » à la main.
+services:
+  - type: web
+    name: crm-icigauthier
+    runtime: node
+    plan: free
+    region: virginia # côte est US (le plus proche du Québec sur le plan gratuit)
+    buildCommand: npm install --include=dev && npm run build
+    startCommand: node server.js
+    healthCheckPath: /healthz
+    envVars:
+      - key: NODE_ENV
+        value: production
+      # Secret pour signer les sessions — généré automatiquement par Render.
+      - key: SESSION_SECRET
+        generateValue: true
+      # Ton mot de passe de connexion au CRM — à saisir dans le tableau de bord.
+      - key: CRM_PASSWORD
+        sync: false
+      # Lien de connexion à ta base MongoDB — à saisir dans le tableau de bord.
+      - key: MONGODB_URI
+        sync: false
