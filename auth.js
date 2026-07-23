@@ -122,6 +122,16 @@ export function setupAuth(app) {
   // Barrière : tout ce qui suit exige une session valide.
   app.use((req, res, next) => {
     if (!authRequired()) return next()
+
+    // Accès « assistant » : jeton Bearer sur l'API, pour lier un assistant IA au
+    // CRM via le web (lecture + modification). Inactif tant qu'ASSISTANT_TOKEN
+    // n'est pas défini → aucun risque en attendant.
+    const assistantToken = (process.env.ASSISTANT_TOKEN || '').trim()
+    if (assistantToken && req.path.startsWith('/api/')) {
+      const m = (req.headers.authorization || '').match(/^Bearer\s+(.+)$/i)
+      if (m && safeEqual(m[1].trim(), assistantToken)) return next()
+    }
+
     if (misconfigured()) {
       if (req.path.startsWith('/api/')) return res.status(503).json({ error: 'Serveur non configuré (mot de passe manquant).' })
       return res.status(503).type('html').send(setupPage())
