@@ -7,7 +7,6 @@ import Agenda from './components/Agenda.jsx'
 import Todo from './components/Todo.jsx'
 import Finance from './components/Finance.jsx'
 import News from './components/News.jsx'
-import Blog from './components/Blog.jsx'
 import Contacts from './components/Contacts.jsx'
 import Partners from './components/Partners.jsx'
 import Performance from './components/Performance.jsx'
@@ -25,14 +24,6 @@ function minusMonths(isoDate, n) {
   return isoLocal(new Date(y, m - 1 - n, d))
 }
 
-// Prochain vendredi (aujourd'hui si on est vendredi).
-function nextFriday() {
-  const d = new Date()
-  d.setHours(0, 0, 0, 0)
-  d.setDate(d.getDate() + ((5 - d.getDay() + 7) % 7))
-  return isoLocal(d)
-}
-
 const NAV = [
   { key: 'overview', label: "Vue d'ensemble", icon: '◧' },
   { key: 'pipeline', label: 'Pipeline', icon: '▦' },
@@ -42,7 +33,6 @@ const NAV = [
   { key: 'partners', label: 'Partenaires', icon: '⤳' },
   { key: 'finance', label: 'Finance', icon: '$' },
   { key: 'news', label: 'Nouvelles', icon: '📰' },
-  { key: 'blog', label: 'Blog', icon: '✎' },
   { key: 'performance', label: 'Performance', icon: '📈' },
 ]
 
@@ -52,9 +42,7 @@ export default function App() {
   const [events, setEvents] = useState([])
   const [todos, setTodos] = useState([])
   const [finances, setFinances] = useState([])
-  const [posts, setPosts] = useState([])
-  const [subscribers, setSubscribers] = useState([])
-  const [deploy, setDeploy] = useState({ configured: false, status: 'idle', url: '', error: '' })
+  const [, setSubscribers] = useState([])
   const [loading, setLoading] = useState(true)
   const [error, setError] = useState('')
   const [view, setView] = useState('overview')
@@ -76,37 +64,11 @@ export default function App() {
       setEvents(data.events || [])
       setTodos(data.todos || [])
       setFinances(data.finances || [])
-      setPosts(data.posts || [])
       setSubscribers(data.subscribers || [])
-      ensureFridayReminder(data.todos || [])
     } catch {
       setError('Impossible de charger les données. Le serveur est-il démarré ?')
     } finally {
       setLoading(false)
-    }
-  }
-
-  // Crée automatiquement le rappel hebdo « écrire le journal du vendredi ».
-  async function ensureFridayReminder(currentTodos) {
-    const today = isoLocal(new Date())
-    const has = currentTodos.some(
-      (t) => t.kind === 'journal-friday' && !t.done && (t.due || '') >= today,
-    )
-    if (has) return
-    const fri = nextFriday()
-    const label = new Date(fri + 'T00:00:00').toLocaleDateString('fr-CA', {
-      day: 'numeric',
-      month: 'long',
-    })
-    try {
-      const created = await api.createTodo({
-        text: `✍️ Écrire l'article du blog (vendredi ${label})`,
-        due: fri,
-        kind: 'journal-friday',
-      })
-      setTodos((ts) => [created, ...ts])
-    } catch {
-      /* ignore */
     }
   }
 
@@ -121,29 +83,7 @@ export default function App() {
   useEffect(() => {
     load()
     refreshOutlook()
-    api
-      .deployStatus()
-      .then((s) => setDeploy((d) => ({ ...d, configured: !!s.configured })))
-      .catch(() => {})
   }, [])
-
-  // Reconstruit et publie le site sur Netlify.
-  async function triggerDeploy() {
-    setDeploy((d) => ({ ...d, status: 'deploying', error: '' }))
-    try {
-      const r = await api.deploy()
-      if (r.needsConfig) {
-        setDeploy((d) => ({ ...d, configured: false, status: 'idle' }))
-      } else if (r.ok) {
-        setDeploy((d) => ({ ...d, configured: true, status: 'done', url: r.url || '' }))
-        setToast('Blog mis à jour en ligne ✅')
-      } else {
-        setDeploy((d) => ({ ...d, status: 'error', error: r.error || 'Erreur' }))
-      }
-    } catch (e) {
-      setDeploy((d) => ({ ...d, status: 'error', error: e.message }))
-    }
-  }
 
   // ---- Import automatique des leads du formulaire (via Outlook) ----
   async function scanLeads() {
@@ -368,42 +308,6 @@ export default function App() {
     setFinances((fs) => fs.filter((f) => f.id !== id))
   }
 
-  // ---- Journal / blog ----
-  async function savePost(post) {
-    let saved
-    if (post.id) {
-      saved = await api.updatePost(post.id, post)
-      setPosts((ps) => ps.map((p) => (p.id === saved.id ? saved : p)))
-    } else {
-      saved = await api.createPost(post)
-      setPosts((ps) => [saved, ...ps])
-    }
-    if (deploy.configured) triggerDeploy() // met le site à jour en ligne tout seul
-    return saved
-  }
-  async function deletePost(id) {
-    await api.removePost(id)
-    setPosts((ps) => ps.filter((p) => p.id !== id))
-    if (deploy.configured) triggerDeploy()
-  }
-  async function sendNewsletter(postId) {
-    const r = await api.sendNewsletter(postId)
-    if (r.noSubscribers) {
-      setToast('Aucun abonné pour l’instant.')
-    } else if (r.needsAuth) {
-      refreshOutlook()
-      setToast('Autorise l’envoi de courriels (reconnecte Outlook), puis réessaie.')
-    } else if (r.sent) {
-      setPosts((ps) => ps.map((p) => (p.id === r.post.id ? r.post : p)))
-      setToast(`Billet envoyé à ${r.sent} abonné(s) 📧`)
-    }
-    return r
-  }
-  async function removeSubscriber(email) {
-    await api.removeSubscriber(email)
-    setSubscribers((ss) => ss.filter((s) => s.email !== email))
-  }
-
   const filtered = useMemo(() => {
     const q = query.trim().toLowerCase()
     if (!q) return clients
@@ -522,18 +426,6 @@ export default function App() {
             <Finance finances={finances} onAdd={addFinance} onDelete={deleteFinance} />
           ) : view === 'news' ? (
             <News />
-          ) : view === 'blog' ? (
-            <Blog
-              posts={posts}
-              onSave={savePost}
-              onDelete={deletePost}
-              subscribers={subscribers}
-              sendEnabled={!!outlook.sendEnabled}
-              onSendEmail={sendNewsletter}
-              onRemoveSubscriber={removeSubscriber}
-              deploy={deploy}
-              onDeploy={triggerDeploy}
-            />
           ) : view === 'contacts' ? (
             <Contacts clients={filtered} onOpen={setEditingClient} />
           ) : view === 'partners' ? (

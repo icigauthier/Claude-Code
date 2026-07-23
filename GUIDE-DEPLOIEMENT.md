@@ -102,23 +102,28 @@ Tes données sont partagées entre tous tes appareils (tout est dans la base en 
 
 ---
 
-## ℹ️ Ce qui marche en ligne — et ce qui reste sur ton PC
+## 🔄 Zéro problème de sync : une seule source de données
 
-**En ligne (téléphone + ordis) :** Pipeline, Vue d'ensemble, Agenda (mode local),
-Contacts, Partenaires, À faire, Finance, Nouvelles, Performance. ✅
+Pour que ton **PC, ton laptop et ton téléphone** montrent **toujours la même chose** :
 
-**Reste sur ton PC pour l'instant** (ça dépend de ton 2ᵉ projet `hypotheque-site`
-et d'Outlook, qu'on branchera après) :
-- le **Blog / journal** et l'**envoi d'infolettre** ;
-- le bouton **« Déployer sur Netlify »** ;
-- la **synchro Outlook** de l'agenda + l'import automatique des leads.
+- ✅ **Utilise l'adresse en ligne (`…onrender.com`) sur TOUS tes appareils**, y
+  compris sur ton PC (mets-la en favori / raccourci). Ils lisent et écrivent tous
+  dans la même base → tout est synchronisé, en tout temps.
+- ⚠️ **N'utilise plus `Demarrer-CRM.cmd` pour ton usage quotidien.** Ce raccourci
+  ouvre l'ancienne version *locale* (données sur ce PC seulement) : t'en servir en
+  parallèle créerait **deux CRM séparés qui divergent**. Garde-le uniquement comme
+  dépannage hors-ligne.
 
-Ces boutons s'affichent « non configuré » en ligne : c'est normal, ils
-continuent de fonctionner depuis ton PC comme avant.
+## ℹ️ Ce qu'il y a dans ton CRM en ligne
 
-> 🔜 **Phase 2 (quand tu voudras) :** je peux brancher Outlook sur la version en
-> ligne (agenda + leads). Ça demande juste d'ajouter une adresse de redirection
-> dans tes réglages Microsoft et 2-3 variables. Dis-le-moi et on le fait.
+Tout le cœur du CRM : **Vue d'ensemble, Pipeline, Agenda, À faire, Contacts,
+Partenaires, Finance, Nouvelles, Performance.** ✅
+*(La section **Blog** a été retirée, comme demandé.)*
+
+> 📅 **Note sur l'agenda :** en ligne, tes rencontres sont enregistrées dans la
+> base et synchronisées entre tous tes appareils. La synchro avec le calendrier
+> **Outlook** reste optionnelle et branchée seulement sur ton PC pour l'instant —
+> si tu veux Outlook en ligne un jour, dis-le-moi.
 
 ---
 
@@ -126,8 +131,10 @@ continuent de fonctionner depuis ton PC comme avant.
 
 - **Changer ton mot de passe :** Render → ton service → *Environment* → modifie
   `CRM_PASSWORD` → *Save* (le service redémarre seul).
-- **Ton PC continue de marcher normalement** : sans ces variables, `Demarrer-CRM.cmd`
-  ouvre le CRM en local dans `data/crm.json`, sans mot de passe, comme avant.
+- **Version locale de secours** : `Demarrer-CRM.cmd` ouvre encore le CRM en local
+  (`data/crm.json`, sans mot de passe). À garder seulement pour un dépannage
+  hors-ligne — pour le quotidien, utilise l'adresse en ligne partout (voir « Zéro
+  problème de sync »).
 - **Mettre à jour tes données en ligne depuis ton PC :** relance
   `npm run upload-data` (⚠️ ça remplace la version en ligne par ta version locale).
 - **Vie privée (Loi 25) :** tes données sont chez MongoDB/Render (États-Unis),

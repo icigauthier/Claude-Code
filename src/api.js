@@ -73,20 +73,4 @@ export const api = {
 
   // Nouvelles (flux RSS agrégés)
   getNews: (force) => req(`/api/news${force ? '?force=1' : ''}`),
-
-  // Journal / blog (billets du site)
-  createPost: (p) =>
-    req('/api/posts', { method: 'POST', headers: JSON_HEADERS, body: JSON.stringify(p) }),
-  updatePost: (id, patch) =>
-    req(`/api/posts/${id}`, { method: 'PATCH', headers: JSON_HEADERS, body: JSON.stringify(patch) }),
-  removePost: (id) => req(`/api/posts/${id}`, { method: 'DELETE' }),
-
-  // Infolettre
-  sendNewsletter: (postId) =>
-    req('/api/newsletter/send', { method: 'POST', headers: JSON_HEADERS, body: JSON.stringify({ postId }) }),
-  removeSubscriber: (email) => req(`/api/subscribers/${encodeURIComponent(email)}`, { method: 'DELETE' }),
-
-  // Déploiement Netlify
-  deployStatus: () => req('/api/deploy/status'),
-  deploy: () => req('/api/deploy', { method: 'POST' }),
 }
