@@ -40,26 +40,26 @@ function normalize(data) {
 }
 
 /* ---------- MODE NUAGE : MongoDB ---------- */
-let collPromise = null
-async function getCollection() {
-  if (!collPromise) {
-    collPromise = (async () => {
+let dbPromise = null
+async function getDb() {
+  if (!dbPromise) {
+    dbPromise = (async () => {
       const { MongoClient } = await import('mongodb')
       const client = new MongoClient(MONGODB_URI)
       await client.connect()
-      return client.db(MONGODB_DB).collection('state')
+      return client.db(MONGODB_DB)
     })().catch((err) => {
-      collPromise = null // permet une nouvelle tentative au prochain appel
+      dbPromise = null // permet une nouvelle tentative au prochain appel
       throw err
     })
   }
-  return collPromise
+  return dbPromise
 }
 
 /* ---------- API publique ---------- */
 export async function readData() {
   if (usingCloud) {
-    const coll = await getCollection()
+    const coll = (await getDb()).collection('state')
     const doc = await coll.findOne({ _id: 'crm' })
     return normalize(doc && doc.data ? doc.data : emptyData())
   }
@@ -73,7 +73,7 @@ export async function readData() {
 
 export async function writeData(data) {
   if (usingCloud) {
-    const coll = await getCollection()
+    const coll = (await getDb()).collection('state')
     await coll.updateOne({ _id: 'crm' }, { $set: { data, maj: new Date().toISOString() } }, { upsert: true })
     return
   }
@@ -82,4 +82,42 @@ export async function writeData(data) {
   const tmp = DATA_FILE + '.tmp'
   await fs.writeFile(tmp, JSON.stringify(data, null, 2), 'utf8')
   await fs.rename(tmp, DATA_FILE)
+}
+
+/* ---------- Petit stockage clé → texte ----------
+   Sert à la connexion Outlook (config + cache de jetons Microsoft).
+   En ligne : collection MongoDB « kv ». En local : fichiers dans data/. */
+export async function kvGet(key) {
+  if (usingCloud) {
+    const doc = await (await getDb()).collection('kv').findOne({ _id: key })
+    return doc ? doc.value : null
+  }
+  try {
+    return await fs.readFile(path.join(DATA_DIR, key), 'utf8')
+  } catch {
+    return null
+  }
+}
+
+export async function kvSet(key, value) {
+  if (usingCloud) {
+    await (await getDb()).collection('kv').updateOne({ _id: key }, { $set: { value } }, { upsert: true })
+    return
+  }
+  await fs.mkdir(DATA_DIR, { recursive: true })
+  const tmp = path.join(DATA_DIR, key) + '.tmp'
+  await fs.writeFile(tmp, value, 'utf8')
+  await fs.rename(tmp, path.join(DATA_DIR, key))
+}
+
+export async function kvDel(key) {
+  if (usingCloud) {
+    await (await getDb()).collection('kv').deleteOne({ _id: key })
+    return
+  }
+  try {
+    await fs.unlink(path.join(DATA_DIR, key))
+  } catch {
+    /* déjà absent */
+  }
 }

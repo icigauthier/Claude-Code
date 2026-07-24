@@ -3,14 +3,17 @@ import fs from 'node:fs/promises'
 import path from 'node:path'
 import { fileURLToPath } from 'node:url'
 import { PublicClientApplication, CryptoProvider } from '@azure/msal-node'
+import { kvGet, kvSet, kvDel } from './storage.js'
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url))
 const CONFIG_FILE = path.join(__dirname, 'data', 'config.json')
-const CACHE_FILE = path.join(__dirname, 'data', 'ms-cache.json')
-const ACCOUNT_FILE = path.join(__dirname, 'data', 'ms-account.json')
 
 const PORT = process.env.PORT || 4321
-const REDIRECT_URI = `http://localhost:${PORT}/auth/callback`
+// Adresse publique de l'app. En ligne : fournie automatiquement par Render
+// (RENDER_EXTERNAL_URL) ou par APP_URL. En local : localhost. Sert à construire
+// l'adresse de redirection Microsoft (doit correspondre à celle d'Azure).
+const BASE_URL = (process.env.APP_URL || process.env.RENDER_EXTERNAL_URL || `http://localhost:${PORT}`).replace(/\/+$/, '')
+const REDIRECT_URI = `${BASE_URL}/auth/callback`
 const AUTHORITY = 'https://login.microsoftonline.com/common'
 // Permissions séparées : le calendrier marche même si la lecture des courriels
 // n'est pas encore autorisée. La connexion demande l'union des deux.
@@ -27,21 +30,23 @@ let timezone = 'America/Toronto'
 let pca = null
 
 async function loadConfig() {
+  let c = {}
   try {
-    const c = JSON.parse(await fs.readFile(CONFIG_FILE, 'utf8'))
-    const id = (c.msClientId || '').trim()
-    clientId = id === 'REMPLACE_PAR_TON_CLIENT_ID_MICROSOFT' ? '' : id
-    timezone = c.timezone || 'America/Toronto'
+    c = JSON.parse(await fs.readFile(CONFIG_FILE, 'utf8'))
   } catch {
-    clientId = ''
+    /* pas de config.json (normal en ligne : on lit les variables d'env) */
   }
+  const id = (process.env.MS_CLIENT_ID || c.msClientId || '').trim()
+  clientId = id === 'REMPLACE_PAR_TON_CLIENT_ID_MICROSOFT' ? '' : id
+  timezone = process.env.MS_TIMEZONE || c.timezone || 'America/Toronto'
 }
 
 function cachePlugin() {
   return {
     beforeCacheAccess: async (ctx) => {
       try {
-        ctx.tokenCache.deserialize(await fs.readFile(CACHE_FILE, 'utf8'))
+        const data = await kvGet('ms-cache.json')
+        if (data) ctx.tokenCache.deserialize(data)
       } catch {
         /* pas de cache encore */
       }
@@ -49,7 +54,7 @@ function cachePlugin() {
     afterCacheAccess: async (ctx) => {
       if (ctx.cacheHasChanged) {
         try {
-          await fs.writeFile(CACHE_FILE, ctx.tokenCache.serialize())
+          await kvSet('ms-cache.json', ctx.tokenCache.serialize())
         } catch {
           /* ignore */
         }
@@ -72,7 +77,9 @@ async function getPca() {
 
 async function getAccount(instance) {
   try {
-    const { homeAccountId } = JSON.parse(await fs.readFile(ACCOUNT_FILE, 'utf8'))
+    const raw = await kvGet('ms-account.json')
+    if (!raw) return null
+    const { homeAccountId } = JSON.parse(raw)
     return await instance.getTokenCache().getAccountByHomeId(homeAccountId)
   } catch {
     return null
@@ -115,8 +122,8 @@ export async function handleCallback(code, state) {
     redirectUri: REDIRECT_URI,
     codeVerifier,
   })
-  await fs.writeFile(
-    ACCOUNT_FILE,
+  await kvSet(
+    'ms-account.json',
     JSON.stringify({
       homeAccountId: result.account.homeAccountId,
       username: result.account.username,
@@ -164,7 +171,7 @@ export async function logout() {
     /* ignore */
   }
   try {
-    await fs.unlink(ACCOUNT_FILE)
+    await kvDel('ms-account.json')
   } catch {
     /* ignore */
   }
