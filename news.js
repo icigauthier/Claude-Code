@@ -46,6 +46,109 @@ const SOURCES = [
     site: 'https://www.cmhc-schl.gc.ca/media-newsroom',
     color: '#c9922b',
   },
+
+  /* ---- Priorité absolue ---- */
+  {
+    // Cas spécial : le rendement de l'obligation 5 ans du GdC (un chiffre, pas
+    // des articles). Source directe : l'API Valet de la Banque du Canada.
+    key: 'goc5y',
+    name: 'Obligation 5 ans (GdC)',
+    type: 'valet',
+    seriesId: 'BD.CDN.5YR.DQ.YLD',
+    url: 'https://www.bankofcanada.ca/valet/observations/BD.CDN.5YR.DQ.YLD/json?recent=1',
+    site: 'https://www.banqueducanada.ca/taux/taux-interet/obligations-canadiennes/',
+    color: '#d4531e',
+  },
+  {
+    key: 'apciq',
+    name: 'APCIQ (Gatineau)',
+    url:
+      'https://news.google.com/rss/search?q=APCIQ%20OR%20%22march%C3%A9%20immobilier%20Gatineau%22%20OR%20%22Barom%C3%A8tre%20r%C3%A9sidentiel%22&hl=fr-CA&gl=CA&ceid=CA:fr',
+    site: 'https://apciq.ca/',
+    color: '#2f7d6b',
+  },
+  {
+    key: 'oreb',
+    name: 'OREB (Ottawa)',
+    url:
+      'https://news.google.com/rss/search?q=%22Ottawa%20Real%20Estate%20Board%22%20OR%20%22OREB%22&hl=en-CA&gl=CA&ceid=CA:en',
+    site: 'https://www.oreb.ca/',
+    color: '#3b6ea5',
+  },
+  {
+    key: 'rcecon',
+    name: 'Radio-Canada Économie',
+    url:
+      'https://news.google.com/rss/search?q=%C3%A9conomie%20site:ici.radio-canada.ca&hl=fr-CA&gl=CA&ceid=CA:fr',
+    site: 'https://ici.radio-canada.ca/economie',
+    color: '#c1272d',
+  },
+  {
+    key: 'cmp',
+    name: 'Canadian Mortgage Pro.',
+    url:
+      'https://news.google.com/rss/search?q=site:mpamag.com%20OR%20%22Canadian%20Mortgage%20Professional%22&hl=en-CA&gl=CA&ceid=CA:en',
+    site: 'https://www.mpamag.com/ca',
+    color: '#6b4fa5',
+  },
+
+  /* ---- Deuxième vague ---- */
+  {
+    key: 'saretsky',
+    name: 'The Saretsky Report',
+    url: 'https://stevesaretsky.substack.com/feed',
+    site: 'https://stevesaretsky.substack.com/',
+    color: '#1f7a5a',
+  },
+  {
+    key: 'desjardins',
+    name: 'Desjardins — Études éco.',
+    url:
+      'https://news.google.com/rss/search?q=Desjardins%20%22%C3%A9tudes%20%C3%A9conomiques%22&hl=fr-CA&gl=CA&ceid=CA:fr',
+    site: 'https://www.desjardins.com/qc/fr/etudes-economiques.html',
+    color: '#00874e',
+  },
+
+  /* ---- Bonus ---- */
+  {
+    key: 'osfi',
+    name: 'BSIF / OSFI',
+    url:
+      'https://news.google.com/rss/search?q=(OSFI%20OR%20BSIF)%20(hypoth%C3%A8que%20OR%20%22B-20%22%20OR%20%22stress%20test%22)&hl=fr-CA&gl=CA&ceid=CA:fr',
+    site: 'https://www.osfi-bsif.gc.ca/',
+    color: '#7a5c3e',
+  },
+  {
+    key: 'fsra',
+    name: 'FSRA Ontario',
+    url:
+      'https://news.google.com/rss/search?q=%22FSRA%22%20Ontario%20(mortgage%20OR%20broker)&hl=en-CA&gl=CA&ceid=CA:en',
+    site: 'https://www.fsrao.ca/',
+    color: '#4a6d8c',
+  },
+  {
+    key: 'betterdwelling',
+    name: 'Better Dwelling',
+    url: 'https://betterdwelling.com/feed/',
+    site: 'https://betterdwelling.com/',
+    color: '#a83244',
+  },
+  {
+    key: 'rentals',
+    name: 'Rentals.ca (loyers)',
+    url:
+      'https://news.google.com/rss/search?q=%22Rentals.ca%22%20(rent%20report%20OR%20loyers)&hl=en-CA&gl=CA&ceid=CA:en',
+    site: 'https://rentals.ca/national-rent-report',
+    color: '#2a8fbd',
+  },
+  {
+    key: 'bsf',
+    name: 'Insolvabilités (BSF)',
+    url:
+      'https://news.google.com/rss/search?q=Canada%20(insolvabilit%C3%A9%20OR%20faillites%20OR%20insolvency)%20(consommateurs%20OR%20m%C3%A9nages%20OR%20consumer)&hl=fr-CA&gl=CA&ceid=CA:fr',
+    site: 'https://ised-isde.canada.ca/site/bureau-surintendant-faillites/fr',
+    color: '#8a6d3b',
+  },
 ]
 
 function decodeEntities(s) {
@@ -114,6 +217,7 @@ function parseFeed(xml, source) {
 }
 
 async function fetchOne(source) {
+  if (source.type === 'valet') return fetchValet(source)
   const ctrl = new AbortController()
   const to = setTimeout(() => ctrl.abort(), 12000)
   try {
@@ -125,6 +229,43 @@ async function fetchOne(source) {
     if (!r.ok) throw new Error(`HTTP ${r.status}`)
     const xml = await r.text()
     return parseFeed(xml, source).slice(0, PER_SOURCE)
+  } finally {
+    clearTimeout(to)
+  }
+}
+
+// Cas spécial : un chiffre (rendement d'obligation) via l'API Valet publique de
+// la Banque du Canada. Renvoyé comme une « nouvelle » unique, à jour du jour.
+async function fetchValet(source) {
+  const ctrl = new AbortController()
+  const to = setTimeout(() => ctrl.abort(), 12000)
+  try {
+    const r = await fetch(source.url, {
+      headers: { 'User-Agent': UA, Accept: 'application/json' },
+      redirect: 'follow',
+      signal: ctrl.signal,
+    })
+    if (!r.ok) throw new Error(`HTTP ${r.status}`)
+    const data = await r.json()
+    const obs = data.observations || []
+    const last = obs[obs.length - 1]
+    const raw = last && last[source.seriesId] ? last[source.seriesId].v : null
+    if (raw == null || raw === '') return []
+    const val = Number(raw)
+    if (!isFinite(val)) return []
+    const label = last.d
+      ? new Date(last.d + 'T12:00:00').toLocaleDateString('fr-CA', { day: 'numeric', month: 'long' })
+      : ''
+    return [
+      {
+        title: `Obligation 5 ans du GdC : ${val.toFixed(2)} %${label ? ` — ${label}` : ''}`,
+        link: source.site,
+        date: last.d ? new Date(last.d + 'T12:00:00').toISOString() : null,
+        source: source.name,
+        sourceKey: source.key,
+        color: source.color,
+      },
+    ]
   } finally {
     clearTimeout(to)
   }
