@@ -3,7 +3,7 @@
 
 const UA =
   'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/126.0 Safari/537.36'
-const TTL = 15 * 60 * 1000 // 15 minutes
+const TTL = 60 * 60 * 1000 // 1 heure
 const PER_SOURCE = 12 // articles récents par source
 
 const SOURCES = [

@@ -2,7 +2,7 @@ import { useEffect, useState, useMemo } from 'react'
 import { api } from '../api.js'
 import { getReadSet, toggleRead } from '../newsRead.js'
 
-const REFRESH_MS = 15 * 60 * 1000 // 15 minutes
+const REFRESH_MS = 60 * 60 * 1000 // 1 heure
 
 function timeAgo(iso) {
   if (!iso) return ''
@@ -47,7 +47,7 @@ export default function News() {
 
   useEffect(() => {
     load()
-    const id = setInterval(() => load(), REFRESH_MS) // auto-update 15 min
+    const id = setInterval(() => load(), REFRESH_MS) // mise à jour auto (1 h)
     const t = setInterval(() => setTick((x) => x + 1), 60000) // horodatage relatif
     return () => {
       clearInterval(id)
@@ -98,7 +98,7 @@ export default function News() {
         </div>
       </div>
 
-      <p className="news__hint">Mise à jour automatique toutes les 15 minutes.</p>
+      <p className="news__hint">Mise à jour automatique toutes les heures.</p>
 
       {error && <div className="banner banner--error">{error}</div>}
       {loading ? (
