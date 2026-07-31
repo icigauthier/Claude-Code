@@ -82,7 +82,7 @@ export default function Partners({ partners, clients, onOpen, onNew, onContact, 
       {q.trim() && filtered.length === 0 ? (
         <p className="empty-state">Aucun partenaire ne correspond à « {q} ».</p>
       ) : (
-        <div className="board">
+        <div className="board board--partners">
           {PARTNER_STATUTS.map((col) => {
             const items = byCol[col.key] || []
             return (

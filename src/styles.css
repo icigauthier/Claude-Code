@@ -969,6 +969,23 @@ a.btn {
   margin: 0;
 }
 
+/* Kanban partenaires : 3 colonnes larges qui remplissent tout l'écran */
+.board--partners {
+  overflow-x: visible;
+}
+.board--partners .col {
+  flex: 1 1 0;
+  min-width: 0;
+}
+@media (max-width: 820px) {
+  .board--partners {
+    overflow-x: auto;
+  }
+  .board--partners .col {
+    flex: 0 0 280px;
+  }
+}
+
 /* Carte client */
 .card {
   background: var(--panel);
