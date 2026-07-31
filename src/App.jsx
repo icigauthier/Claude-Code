@@ -222,6 +222,17 @@ export default function App() {
     setContactFor(null)
   }
 
+  // Glisser-déposer d'un partenaire d'une colonne à l'autre (change son statut).
+  async function movePartner(id, statut) {
+    const prev = partners
+    setPartners((ps) => ps.map((p) => (p.id === id ? { ...p, statut } : p)))
+    try {
+      await api.updatePartner(id, { statut })
+    } catch {
+      setPartners(prev)
+    }
+  }
+
   // ---- Rencontres (agenda) ----
   // Charge les rencontres du mois affiché : Outlook si connecté, sinon local.
   async function loadMonth(startISO, endISO) {
@@ -468,6 +479,7 @@ export default function App() {
               onOpen={setEditingPartner}
               onNew={() => setEditingPartner({})}
               onContact={setContactFor}
+              onMove={movePartner}
             />
           ) : (
             <Performance clients={clients} />

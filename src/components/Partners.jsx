@@ -1,4 +1,4 @@
-import { useMemo } from 'react'
+import { useMemo, useState } from 'react'
 import {
   PARTNER_STATUTS,
   PARTNER_INDUSTRY_MAP,
@@ -6,13 +6,14 @@ import {
 } from '../constants.js'
 import { fmtDate } from '../format.js'
 
-// Colonne effective d'un partenaire : « gagné » dès qu'un client le référence.
-function columnOf(p, refCount) {
-  if (refCount > 0 || p.statut === 'gagne') return 'gagne'
-  return p.statut === 'relancer' ? 'relancer' : 'a_contacter'
-}
+const COL_KEYS = PARTNER_STATUTS.map((s) => s.key)
+// Colonne d'un partenaire = son statut (par défaut « à contacter »).
+const columnOf = (p) => (COL_KEYS.includes(p.statut) ? p.statut : 'a_contacter')
 
-export default function Partners({ partners, clients, onOpen, onNew, onContact }) {
+export default function Partners({ partners, clients, onOpen, onNew, onContact, onMove }) {
+  const [dragId, setDragId] = useState(null)
+  const [dragOver, setDragOver] = useState(null)
+
   // Nombre de références = COUNT des clients pointant vers le partenaire.
   const refCounts = useMemo(() => {
     const m = {}
@@ -24,9 +25,18 @@ export default function Partners({ partners, clients, onOpen, onNew, onContact }
 
   const byCol = useMemo(() => {
     const map = Object.fromEntries(PARTNER_STATUTS.map((s) => [s.key, []]))
-    for (const p of partners) map[columnOf(p, refCounts[p.id] || 0)].push(p)
+    for (const p of partners) map[columnOf(p)].push(p)
     return map
-  }, [partners, refCounts])
+  }, [partners])
+
+  function onDrop(statutKey) {
+    if (dragId) {
+      const p = partners.find((x) => x.id === dragId)
+      if (p && columnOf(p) !== statutKey) onMove(dragId, statutKey)
+    }
+    setDragId(null)
+    setDragOver(null)
+  }
 
   return (
     <div>
@@ -43,7 +53,18 @@ export default function Partners({ partners, clients, onOpen, onNew, onContact }
           {PARTNER_STATUTS.map((col) => {
             const items = byCol[col.key] || []
             return (
-              <section key={col.key} className="col">
+              <section
+                key={col.key}
+                className={`col ${dragOver === col.key ? 'col--over' : ''}`}
+                onDragOver={(e) => {
+                  e.preventDefault()
+                  if (dragOver !== col.key) setDragOver(col.key)
+                }}
+                onDragLeave={(e) => {
+                  if (!e.currentTarget.contains(e.relatedTarget)) setDragOver(null)
+                }}
+                onDrop={() => onDrop(col.key)}
+              >
                 <header className="col__head">
                   <span className="dot" style={{ background: col.color }} />
                   <span className="col__label">{col.label}</span>
@@ -55,8 +76,14 @@ export default function Partners({ partners, clients, onOpen, onNew, onContact }
                       key={p.id}
                       partner={p}
                       refCount={refCounts[p.id] || 0}
+                      dragging={dragId === p.id}
                       onOpen={() => onOpen(p)}
                       onContact={() => onContact(p)}
+                      onDragStart={() => setDragId(p.id)}
+                      onDragEnd={() => {
+                        setDragId(null)
+                        setDragOver(null)
+                      }}
                     />
                   ))}
                   {items.length === 0 && <p className="col__empty">Aucun</p>}
@@ -70,9 +97,14 @@ export default function Partners({ partners, clients, onOpen, onNew, onContact }
   )
 }
 
-function PartnerCard({ partner: p, refCount, onOpen, onContact }) {
+function PartnerCard({ partner: p, refCount, dragging, onOpen, onContact, onDragStart, onDragEnd }) {
   return (
-    <article className="partner-card">
+    <article
+      className={`partner-card ${dragging ? 'is-dragging' : ''}`}
+      draggable
+      onDragStart={onDragStart}
+      onDragEnd={onDragEnd}
+    >
       <div className="partner-card__top" style={{ cursor: 'pointer' }} onClick={onOpen}>
         <h3>{p.nom || 'Sans nom'}</h3>
         <span className="partner-type">{PARTNER_INDUSTRY_MAP[p.industrie] || 'Autre'}</span>

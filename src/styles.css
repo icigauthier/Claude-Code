@@ -1135,6 +1135,13 @@ a.btn {
   transform: translateY(-2px);
   box-shadow: var(--sh-3);
 }
+.partner-card[draggable='true'] {
+  cursor: grab;
+}
+.partner-card.is-dragging {
+  opacity: 0.45;
+  cursor: grabbing;
+}
 .partner-card__top {
   display: flex;
   justify-content: space-between;
