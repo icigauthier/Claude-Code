@@ -6,6 +6,7 @@ const EMPTY = {
   industrie: 'autre',
   langue: 'bilingue',
   telephone: '',
+  site_web: '',
   notes: '',
   statut: 'a_contacter',
   date_relance: '',
@@ -71,10 +72,16 @@ export default function PartnerModal({ partner, onClose, onSave, onDelete }) {
             </label>
           </div>
 
-          <label className="field">
-            <span className="field__label">Téléphone</span>
-            <input value={f.telephone} onChange={set('telephone')} />
-          </label>
+          <div className="grid2">
+            <label className="field">
+              <span className="field__label">Téléphone</span>
+              <input value={f.telephone} onChange={set('telephone')} />
+            </label>
+            <label className="field">
+              <span className="field__label">Site web</span>
+              <input value={f.site_web} onChange={set('site_web')} placeholder="https://…" />
+            </label>
+          </div>
 
           <label className="field">
             <span className="field__label">Notes</span>

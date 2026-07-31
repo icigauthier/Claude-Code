@@ -144,6 +144,19 @@ function PartnerCard({ partner: p, refCount, dragging, onOpen, onContact, onDrag
       </div>
       <div className="partner-line">🗣 {PARTNER_LANGUE_MAP[p.langue] || '—'}</div>
       <div className="partner-line">🔗 {refCount} référence{refCount > 1 ? 's' : ''}</div>
+      {p.site_web && (
+        <div className="partner-line">
+          🌐{' '}
+          <a
+            href={/^https?:\/\//.test(p.site_web) ? p.site_web : 'https://' + p.site_web}
+            target="_blank"
+            rel="noopener noreferrer"
+            onClick={(e) => e.stopPropagation()}
+          >
+            Site web
+          </a>
+        </div>
+      )}
       {p.date_relance && (
         <div className="partner-line">📅 Relance : {fmtDate(p.date_relance)}</div>
       )}
