@@ -13,6 +13,7 @@ const columnOf = (p) => (COL_KEYS.includes(p.statut) ? p.statut : 'a_contacter')
 export default function Partners({ partners, clients, onOpen, onNew, onContact, onMove }) {
   const [dragId, setDragId] = useState(null)
   const [dragOver, setDragOver] = useState(null)
+  const [q, setQ] = useState('')
 
   // Nombre de références = COUNT des clients pointant vers le partenaire.
   const refCounts = useMemo(() => {
@@ -23,11 +24,22 @@ export default function Partners({ partners, clients, onOpen, onNew, onContact, 
     return m
   }, [clients])
 
+  // Recherche rapide : nom, industrie, langue, téléphone, notes.
+  const filtered = useMemo(() => {
+    const needle = q.trim().toLowerCase()
+    if (!needle) return partners
+    return partners.filter((p) =>
+      [p.nom, PARTNER_INDUSTRY_MAP[p.industrie], PARTNER_LANGUE_MAP[p.langue], p.telephone, p.notes]
+        .filter(Boolean)
+        .some((v) => String(v).toLowerCase().includes(needle)),
+    )
+  }, [partners, q])
+
   const byCol = useMemo(() => {
     const map = Object.fromEntries(PARTNER_STATUTS.map((s) => [s.key, []]))
-    for (const p of partners) map[columnOf(p)].push(p)
+    for (const p of filtered) map[columnOf(p)].push(p)
     return map
-  }, [partners])
+  }, [filtered])
 
   function onDrop(statutKey) {
     if (dragId) {
@@ -38,16 +50,37 @@ export default function Partners({ partners, clients, onOpen, onNew, onContact, 
     setDragOver(null)
   }
 
-  return (
-    <div>
-      <div className="section-actions">
-        <button className="btn btn--primary" onClick={onNew}>+ Nouveau partenaire</button>
-      </div>
-
-      {partners.length === 0 ? (
+  if (partners.length === 0) {
+    return (
+      <div>
+        <div className="section-actions">
+          <button className="btn btn--primary" onClick={onNew}>+ Nouveau partenaire</button>
+        </div>
         <p className="empty-state">
           Aucun partenaire. Ajoute tes agents immobiliers, notaires, comptables, assureurs…
         </p>
+      </div>
+    )
+  }
+
+  return (
+    <div>
+      <div
+        className="section-actions"
+        style={{ display: 'flex', gap: 12, alignItems: 'center', flexWrap: 'wrap' }}
+      >
+        <input
+          className="search"
+          type="search"
+          placeholder="Rechercher un partenaire…"
+          value={q}
+          onChange={(e) => setQ(e.target.value)}
+        />
+        <button className="btn btn--primary" onClick={onNew}>+ Nouveau partenaire</button>
+      </div>
+
+      {q.trim() && filtered.length === 0 ? (
+        <p className="empty-state">Aucun partenaire ne correspond à « {q} ».</p>
       ) : (
         <div className="board">
           {PARTNER_STATUTS.map((col) => {
