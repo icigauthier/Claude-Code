@@ -1,5 +1,6 @@
 import { useEffect, useMemo, useState } from 'react'
 import { api } from './api.js'
+import { PARTNER_INDUSTRY_MAP } from './constants.js'
 import BackgroundPaths from './components/BackgroundPaths.jsx'
 import Overview from './components/Overview.jsx'
 import Board from './components/Board.jsx'
@@ -212,13 +213,40 @@ export default function App() {
     const notes = partner.notes ? `${line}\n${partner.notes}` : line
     const d = new Date()
     d.setDate(d.getDate() + delayDays)
+    const date_relance = isoLocal(d)
     const statut = partner.statut === 'a_contacter' ? 'relancer' : partner.statut
-    const updated = await api.updatePartner(partner.id, {
-      notes,
-      date_relance: isoLocal(d),
-      statut,
-    })
+    const updated = await api.updatePartner(partner.id, { notes, date_relance, statut })
     setPartners((ps) => ps.map((p) => (p.id === updated.id ? updated : p)))
+
+    // Crée une tâche datée pour la relance (remplace l'ancienne du même partenaire).
+    const label = PARTNER_INDUSTRY_MAP[partner.industrie] || 'partenaire'
+    const stale = todos.filter(
+      (t) => t.kind === 'relance-partenaire' && t.partnerId === partner.id && !t.done,
+    )
+    for (const t of stale) {
+      try {
+        await api.removeTodo(t.id)
+      } catch {
+        /* ignore */
+      }
+    }
+    let created = null
+    try {
+      created = await api.createTodo({
+        text: `🔁 Relancer ${partner.nom || 'partenaire'} (${label})`,
+        due: date_relance,
+        kind: 'relance-partenaire',
+        partnerId: partner.id,
+      })
+    } catch {
+      /* ignore */
+    }
+    setTodos((ts) => {
+      const staleIds = new Set(stale.map((t) => t.id))
+      const kept = ts.filter((t) => !staleIds.has(t.id))
+      return created ? [created, ...kept] : kept
+    })
+
     setContactFor(null)
   }
 
