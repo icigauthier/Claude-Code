@@ -499,9 +499,14 @@ export default function App() {
       {editingPartner && (
         <PartnerModal
           partner={editingPartner}
+          clients={clients}
           onClose={() => setEditingPartner(null)}
           onSave={savePartner}
           onDelete={deletePartner}
+          onOpenClient={(c) => {
+            setEditingPartner(null)
+            setEditingClient(c)
+          }}
         />
       )}
       {editingEvent && (

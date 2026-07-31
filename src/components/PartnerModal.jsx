@@ -12,10 +12,13 @@ const EMPTY = {
   date_relance: '',
 }
 
-export default function PartnerModal({ partner, onClose, onSave, onDelete }) {
+export default function PartnerModal({ partner, clients, onClose, onSave, onDelete, onOpenClient }) {
   const isNew = !partner.id
   const [f, setF] = useState({ ...EMPTY, ...partner })
   const [saving, setSaving] = useState(false)
+
+  // Clients référés par ce partenaire (source_partner_id).
+  const referred = (clients || []).filter((c) => c.source_partner_id === partner.id)
 
   useEffect(() => {
     const onKey = (e) => e.key === 'Escape' && onClose()
@@ -87,6 +90,33 @@ export default function PartnerModal({ partner, onClose, onSave, onDelete }) {
             <span className="field__label">Notes</span>
             <textarea rows={4} value={f.notes} onChange={set('notes')} />
           </label>
+
+          {!isNew && (
+            <div className="field">
+              <span className="field__label">Clients référés ({referred.length})</span>
+              {referred.length === 0 ? (
+                <p className="notes__empty">
+                  Aucun client référé pour l'instant. Sur une fiche client, choisis ce partenaire
+                  dans « Référé par (partenaire) ».
+                </p>
+              ) : (
+                <ul className="ref-list">
+                  {referred.map((c) => (
+                    <li key={c.id}>
+                      <button
+                        type="button"
+                        className="ref-link"
+                        onClick={() => onOpenClient && onOpenClient(c)}
+                      >
+                        {c.nom || 'Client sans nom'}
+                      </button>
+                      {c.projet ? <span className="ref-meta"> · {c.projet}</span> : null}
+                    </li>
+                  ))}
+                </ul>
+              )}
+            </div>
+          )}
 
           <footer className="sheet__foot">
             {!isNew && (
