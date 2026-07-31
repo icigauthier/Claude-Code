@@ -14,6 +14,7 @@ import ClientModal from './components/ClientModal.jsx'
 import PartnerModal from './components/PartnerModal.jsx'
 import EventModal from './components/EventModal.jsx'
 import RenewalPrompt from './components/RenewalPrompt.jsx'
+import ContactModal from './components/ContactModal.jsx'
 
 const pad2 = (x) => String(x).padStart(2, '0')
 const isoLocal = (d) => `${d.getFullYear()}-${pad2(d.getMonth() + 1)}-${pad2(d.getDate())}`
@@ -53,6 +54,7 @@ export default function App() {
   const [outlook, setOutlook] = useState({ configured: false, connected: false })
   const [eventsVersion, setEventsVersion] = useState(0)
   const [renewalFor, setRenewalFor] = useState(null)
+  const [contactFor, setContactFor] = useState(null)
   const [toast, setToast] = useState('')
 
   async function load() {
@@ -155,6 +157,15 @@ export default function App() {
       saved = await api.create(patch)
       setClients((cs) => [saved, ...cs])
     }
+    if (saved.source_partner_id) {
+      setPartners((ps) =>
+        ps.map((p) =>
+          p.id === saved.source_partner_id && p.statut !== 'gagne'
+            ? { ...p, statut: 'gagne' }
+            : p,
+        ),
+      )
+    }
     setEditingClient(null)
     if (saved.statut === 'finance' && !wasFinance) setRenewalFor(saved)
   }
@@ -191,6 +202,24 @@ export default function App() {
     await api.removePartner(id)
     setPartners((ps) => ps.filter((p) => p.id !== id))
     setEditingPartner(null)
+  }
+
+  // « Contact fait » : ajoute une note datée, fixe la prochaine relance, et fait
+  // passer « à contacter » → « relancer » (un partenaire gagné reste gagné).
+  async function logContact(partner, { note, delayDays }) {
+    const today = isoLocal(new Date())
+    const line = `${today} : ${note || 'Contact fait'}`
+    const notes = partner.notes ? `${line}\n${partner.notes}` : line
+    const d = new Date()
+    d.setDate(d.getDate() + delayDays)
+    const statut = partner.statut === 'a_contacter' ? 'relancer' : partner.statut
+    const updated = await api.updatePartner(partner.id, {
+      notes,
+      date_relance: isoLocal(d),
+      statut,
+    })
+    setPartners((ps) => ps.map((p) => (p.id === updated.id ? updated : p)))
+    setContactFor(null)
   }
 
   // ---- Rencontres (agenda) ----
@@ -412,6 +441,8 @@ export default function App() {
               onRefreshOutlook={refreshOutlook}
               onOpenEvent={setEditingEvent}
               onNewEvent={(date) => setEditingEvent({ date })}
+              partners={partners}
+              onContact={setContactFor}
             />
           ) : view === 'todo' ? (
             <Todo
@@ -421,6 +452,8 @@ export default function App() {
               onDelete={deleteTodo}
               loadUpcoming={loadUpcoming}
               version={eventsVersion}
+              partners={partners}
+              onContact={setContactFor}
             />
           ) : view === 'finance' ? (
             <Finance finances={finances} onAdd={addFinance} onDelete={deleteFinance} />
@@ -431,8 +464,10 @@ export default function App() {
           ) : view === 'partners' ? (
             <Partners
               partners={partners}
+              clients={clients}
               onOpen={setEditingPartner}
               onNew={() => setEditingPartner({})}
+              onContact={setContactFor}
             />
           ) : (
             <Performance clients={clients} />
@@ -443,6 +478,7 @@ export default function App() {
       {editingClient && (
         <ClientModal
           client={editingClient}
+          partners={partners}
           onClose={() => setEditingClient(null)}
           onSave={saveClient}
           onDelete={deleteClient}
@@ -471,6 +507,13 @@ export default function App() {
           client={renewalFor}
           onConfirm={(date) => createRenewalEvent(renewalFor, date)}
           onSkip={() => setRenewalFor(null)}
+        />
+      )}
+      {contactFor && (
+        <ContactModal
+          partner={contactFor}
+          onClose={() => setContactFor(null)}
+          onSave={logContact}
         />
       )}
       {toast && (

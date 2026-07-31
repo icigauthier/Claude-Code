@@ -10,7 +10,15 @@ const MONTHS = [
 const pad = (n) => String(n).padStart(2, '0')
 const iso = (d) => `${d.getFullYear()}-${pad(d.getMonth() + 1)}-${pad(d.getDate())}`
 
-export default function Agenda({ loadMonth, version, outlook, onOpenEvent, onNewEvent }) {
+export default function Agenda({
+  loadMonth,
+  version,
+  outlook,
+  onOpenEvent,
+  onNewEvent,
+  partners,
+  onContact,
+}) {
   const today = new Date()
   const [cursor, setCursor] = useState(new Date(today.getFullYear(), today.getMonth(), 1))
   const [monthEvents, setMonthEvents] = useState([])
@@ -56,6 +64,15 @@ export default function Agenda({ loadMonth, version, outlook, onOpenEvent, onNew
     for (const k in map) map[k].sort((a, b) => (a.heureDebut || '').localeCompare(b.heureDebut || ''))
     return map
   }, [monthEvents])
+
+  // Relances de partenaires posées sur leur date_relance (pas de sync externe).
+  const relancesByDate = useMemo(() => {
+    const map = {}
+    for (const p of partners || []) {
+      if (p.date_relance) (map[p.date_relance] || (map[p.date_relance] = [])).push(p)
+    }
+    return map
+  }, [partners])
 
   const shift = (n) => setCursor((c) => new Date(c.getFullYear(), c.getMonth() + n, 1))
 
@@ -125,6 +142,20 @@ export default function Agenda({ loadMonth, version, outlook, onOpenEvent, onNew
                   {list.length > 4 && (
                     <span className="cal__more">+{list.length - 4} autres</span>
                   )}
+                  {(relancesByDate[key] || []).map((p) => (
+                    <button
+                      key={'rel-' + p.id}
+                      className="cal__event"
+                      style={{ background: '#a05fb0' }}
+                      onClick={(ev) => {
+                        ev.stopPropagation()
+                        onContact(p)
+                      }}
+                      title={`Relance : ${p.nom || ''}`}
+                    >
+                      ↻ {p.nom || 'Relance'}
+                    </button>
+                  ))}
                 </div>
               </div>
             )

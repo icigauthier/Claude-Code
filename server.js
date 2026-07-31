@@ -15,6 +15,15 @@ function newId(prefix) {
   return prefix + Date.now().toString(36) + Math.random().toString(36).slice(2, 6)
 }
 
+// Un partenaire devient « gagné » dès qu'un client (deal) pointe vers lui.
+function markPartnerWon(data, partnerId) {
+  if (!partnerId) return
+  const i = data.partners.findIndex((p) => p.id === partnerId)
+  if (i !== -1 && data.partners[i].statut !== 'gagne') {
+    data.partners[i] = { ...data.partners[i], statut: 'gagne', maj: new Date().toISOString() }
+  }
+}
+
 /* ---------- App ---------- */
 const app = express()
 app.use(express.json({ limit: '2mb' }))
@@ -37,11 +46,12 @@ app.post('/api/clients', async (req, res) => {
     id: newId('cl_'),
     nom: '', courriel: '', telephone: '', statut: 'nouveau',
     projet: '', echeancier: '', ville: '', source: '',
-    dossierFinmo: '', prochainSuivi: '', notes: [],
+    dossierFinmo: '', prochainSuivi: '', notes: [], source_partner_id: '',
     ...req.body,
     cree: now, maj: now,
   }
   data.clients.unshift(client)
+  markPartnerWon(data, client.source_partner_id)
   await writeData(data)
   res.status(201).json(client)
 })
@@ -55,6 +65,7 @@ app.patch('/api/clients/:id', async (req, res) => {
     id: data.clients[i].id, cree: data.clients[i].cree,
     maj: new Date().toISOString(),
   }
+  markPartnerWon(data, data.clients[i].source_partner_id)
   await writeData(data)
   res.json(data.clients[i])
 })
@@ -74,7 +85,8 @@ app.post('/api/partners', async (req, res) => {
   const now = new Date().toISOString()
   const partner = {
     id: newId('pa_'),
-    nom: '', type: '', contact: '', telephone: '', courriel: '', notes: '',
+    nom: '', industrie: 'autre', langue: 'bilingue', telephone: '', notes: '',
+    statut: 'a_contacter', date_relance: '',
     ...req.body,
     cree: now, maj: now,
   }

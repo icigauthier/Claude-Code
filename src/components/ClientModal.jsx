@@ -18,10 +18,11 @@ const EMPTY = {
   source: '',
   dossierFinmo: '',
   prochainSuivi: '',
+  source_partner_id: '',
   notes: [],
 }
 
-export default function ClientModal({ client, onClose, onSave, onDelete }) {
+export default function ClientModal({ client, partners, onClose, onSave, onDelete }) {
   const isNew = !client.id
   const [f, setF] = useState({ ...EMPTY, ...client })
   const [noteDraft, setNoteDraft] = useState('')
@@ -144,6 +145,15 @@ export default function ClientModal({ client, onClose, onSave, onDelete }) {
               />
             </Field>
           </div>
+
+          <Field label="Référé par (partenaire)">
+            <select value={f.source_partner_id || ''} onChange={set('source_partner_id')}>
+              <option value="">— Aucun —</option>
+              {(partners || []).map((p) => (
+                <option key={p.id} value={p.id}>{p.nom || 'Sans nom'}</option>
+              ))}
+            </select>
+          </Field>
 
           {/* Notes */}
           <div className="notes">

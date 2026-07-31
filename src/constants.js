@@ -53,6 +53,33 @@ export const PARTNER_TYPES = [
   'Autre',
 ]
 
+// Module Partenaires (références)
+export const PARTNER_INDUSTRIES = [
+  { key: 'agent_immo', label: 'Agent immobilier' },
+  { key: 'comptable', label: 'Comptable' },
+  { key: 'notaire', label: 'Notaire' },
+  { key: 'assureur', label: 'Assureur' },
+  { key: 'autre', label: 'Autre' },
+]
+export const PARTNER_INDUSTRY_MAP = Object.fromEntries(
+  PARTNER_INDUSTRIES.map((i) => [i.key, i.label]),
+)
+
+export const PARTNER_LANGUES = [
+  { key: 'francais', label: 'Français' },
+  { key: 'anglais', label: 'Anglais' },
+  { key: 'bilingue', label: 'Bilingue' },
+]
+export const PARTNER_LANGUE_MAP = Object.fromEntries(
+  PARTNER_LANGUES.map((l) => [l.key, l.label]),
+)
+
+export const PARTNER_STATUTS = [
+  { key: 'a_contacter', label: 'À contacter', color: '#b8894b' },
+  { key: 'relancer', label: 'Relancer', color: '#4f8cae' },
+  { key: 'gagne', label: 'Partenaire gagné', color: '#2e7d5b' },
+]
+
 export const EVENT_TYPES = [
   { key: 'Rencontre client', color: '#1f6b4a' },
   { key: 'Appel', color: '#4f8cae' },

@@ -1,7 +1,15 @@
 import { useEffect, useState } from 'react'
-import { PARTNER_TYPES } from '../constants.js'
+import { PARTNER_INDUSTRIES, PARTNER_LANGUES } from '../constants.js'
 
-const EMPTY = { nom: '', type: '', contact: '', telephone: '', courriel: '', notes: '' }
+const EMPTY = {
+  nom: '',
+  industrie: 'autre',
+  langue: 'bilingue',
+  telephone: '',
+  notes: '',
+  statut: 'a_contacter',
+  date_relance: '',
+}
 
 export default function PartnerModal({ partner, onClose, onSave, onDelete }) {
   const isNew = !partner.id
@@ -39,41 +47,38 @@ export default function PartnerModal({ partner, onClose, onSave, onDelete }) {
         </header>
 
         <form className="sheet__body" onSubmit={submit}>
+          <label className="field">
+            <span className="field__label">Nom / entreprise</span>
+            <input value={f.nom} onChange={set('nom')} autoFocus />
+          </label>
+
           <div className="grid2">
             <label className="field">
-              <span className="field__label">Nom / entreprise</span>
-              <input value={f.nom} onChange={set('nom')} autoFocus />
+              <span className="field__label">Industrie</span>
+              <select value={f.industrie} onChange={set('industrie')}>
+                {PARTNER_INDUSTRIES.map((i) => (
+                  <option key={i.key} value={i.key}>{i.label}</option>
+                ))}
+              </select>
             </label>
             <label className="field">
-              <span className="field__label">Type</span>
-              <select value={f.type} onChange={set('type')}>
-                <option value="">—</option>
-                {PARTNER_TYPES.map((t) => (
-                  <option key={t}>{t}</option>
+              <span className="field__label">Langue</span>
+              <select value={f.langue} onChange={set('langue')}>
+                {PARTNER_LANGUES.map((l) => (
+                  <option key={l.key} value={l.key}>{l.label}</option>
                 ))}
               </select>
             </label>
           </div>
 
-          <div className="grid2">
-            <label className="field">
-              <span className="field__label">Personne-ressource</span>
-              <input value={f.contact} onChange={set('contact')} />
-            </label>
-            <label className="field">
-              <span className="field__label">Téléphone</span>
-              <input value={f.telephone} onChange={set('telephone')} />
-            </label>
-          </div>
-
           <label className="field">
-            <span className="field__label">Courriel</span>
-            <input type="email" value={f.courriel} onChange={set('courriel')} />
+            <span className="field__label">Téléphone</span>
+            <input value={f.telephone} onChange={set('telephone')} />
           </label>
 
           <label className="field">
             <span className="field__label">Notes</span>
-            <textarea rows={3} value={f.notes} onChange={set('notes')} />
+            <textarea rows={4} value={f.notes} onChange={set('notes')} />
           </label>
 
           <footer className="sheet__foot">
@@ -89,9 +94,7 @@ export default function PartnerModal({ partner, onClose, onSave, onDelete }) {
               </button>
             )}
             <div className="sheet__foot-right">
-              <button type="button" className="btn btn--ghost" onClick={onClose}>
-                Annuler
-              </button>
+              <button type="button" className="btn btn--ghost" onClick={onClose}>Annuler</button>
               <button className="btn btn--primary" disabled={saving}>
                 {saving ? 'Enregistrement…' : 'Enregistrer'}
               </button>
