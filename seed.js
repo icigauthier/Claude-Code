@@ -74,6 +74,82 @@ const BATCHES = [
       },
     ],
   },
+  {
+    key: 'seed_courtiers_v3',
+    // Réseau de référents (CSV) — Marc-André Perrier exclu (déjà présent).
+    partners: [
+      {
+        id: 'pa_seed_steven_levac',
+        nom: 'Steven Levac — Royal LePage Performance Realty',
+        industrie: 'agent_immo',
+        langue: 'bilingue',
+        telephone: '613-677-8284',
+        site_web: 'https://teamstevenlevac.com',
+        notes:
+          "Courtier / chef d'équipe — Royal LePage Performance Realty. Hawkesbury / Alfred / L'Orignal / Plantagenet (Prescott-Russell).\nAngle : gros volume dans ton marché cœur; partenaire hypothécaire bilingue attitré pour la pré-qualification rapide. Clin d'œil à sa chaîne YouTube.\nProchaine action : texto rédigé — à envoyer.",
+      },
+      {
+        id: 'pa_seed_mehdi_cheddadi',
+        nom: 'Mehdi Cheddadi — Century 21 Synergy Realty',
+        industrie: 'agent_immo',
+        langue: 'bilingue',
+        telephone: '613-601-1304',
+        site_web: '',
+        notes:
+          "Courtier — Century 21 Synergy Realty Inc. Orléans / Ottawa / Kanata / Barrhaven.\nAngle : service en français / anglais / arabe — canal de référence multilingue pour la clientèle néo-arrivante d'Orléans.\nCourriel : mehdi.cheddadi@century21.ca\nProchaine action : texto rédigé — à envoyer.",
+      },
+      {
+        id: 'pa_seed_jean_leger',
+        nom: 'Jean G. Léger — RE/MAX Affiliates Marquis',
+        industrie: 'agent_immo',
+        langue: 'francais',
+        telephone: '613-938-8100',
+        site_web: 'https://remax-cornwall.ca',
+        notes:
+          "Courtier — RE/MAX Affiliates Marquis Ltd. Cornwall (SD&G).\nAngle : nom francophone dans la principale bannière RE/MAX de Cornwall; diversification géographique vers le Sud-Est.\nProchaine action : texto rédigé — à envoyer.",
+      },
+      {
+        id: 'pa_seed_francois_poirier',
+        nom: 'François Poirier — EXIT Realty Matrix',
+        industrie: 'agent_immo',
+        langue: 'francais',
+        telephone: '613-677-1349',
+        site_web: 'https://fpoirier.com',
+        notes:
+          "Courtier — EXIT Realty Matrix. Hawkesbury / Prescott-Russell / Champlain / L'Orignal / Ottawa.\nAngle : courtier francophone bien enraciné, beaucoup d'inscriptions actives; partenaire attitré pour préqualifier ses acheteurs en français.\nProchaine action : nouveau prospect — à contacter.",
+      },
+      {
+        id: 'pa_seed_elise_daponti',
+        nom: 'Élise Da Ponti — RE/MAX Delta Realty',
+        industrie: 'agent_immo',
+        langue: 'bilingue',
+        telephone: '613-315-2714',
+        site_web: 'https://elisedaponti.ca',
+        notes:
+          "Représentante commerciale — RE/MAX Delta Realty. Clarence-Rockland.\nAngle : entièrement bilingue; spécialisée premiers acheteurs / investissement / relocalisation militaire.\nCourriel : elise@trivesta.ca\nProchaine action : nouveau prospect — à contacter.",
+      },
+      {
+        id: 'pa_seed_melanie_lafreniere',
+        nom: 'Mélanie Lafrenière — Royal LePage North Heritage Realty',
+        industrie: 'agent_immo',
+        langue: 'francais',
+        telephone: '705-688-0007',
+        site_web: 'https://myrealtormel.com',
+        notes:
+          "Courtier immobilier — Royal LePage North Heritage Realty. Grand Sudbury.\nAngle : diversification vers le Nord franco-ontarien; spécialiste investissement (REIS) et premiers acheteurs. Contact à distance possible.\nProchaine action : nouveau prospect — à contacter.",
+      },
+      {
+        id: 'pa_seed_marc_simard',
+        nom: 'Marc Simard — Simard & Associés (avocat/notaire)',
+        industrie: 'notaire',
+        langue: 'bilingue',
+        telephone: '613-446-5060',
+        site_web: 'https://simards.ca',
+        notes:
+          "Avocat / notaire (droit immobilier) — Simard & Associés. Rockland / Ottawa.\nAngle : cabinet familial bilingue qui gère les clôtures d'achat de la région; relation réciproque naturelle (clôtures ↔ acheteurs à financer).\nCourriel : info@simards.ca\nProchaine action : nouveau prospect — à contacter.",
+      },
+    ],
+  },
 ]
 
 export async function seedPartners() {
