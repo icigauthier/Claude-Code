@@ -150,6 +150,56 @@ const BATCHES = [
       },
     ],
   },
+  {
+    key: 'seed_courtiers_v4',
+    partners: [
+      {
+        id: 'pa_seed_eric_fournier',
+        nom: 'Éric Fournier — RE/MAX (Équipe Fournier)',
+        industrie: 'agent_immo',
+        langue: 'francais',
+        telephone: '613-324-0019',
+        site_web: 'https://ericfournier.ca',
+        notes: "RE/MAX — Équipe Fournier. Embrun / Casselman / Russell.\nCourriel : eric@ericfournier.ca",
+      },
+      {
+        id: 'pa_seed_jazz_dicaire',
+        nom: 'Jazz Dicaire — Dicaire Homes / Royal LePage Performance',
+        industrie: 'agent_immo',
+        langue: 'francais',
+        telephone: '613-830-3350',
+        site_web: 'https://dicairehomes.ca',
+        notes: "Dicaire Homes / Royal LePage Performance. Orléans.\nCourriel : jazz@dicairehomes.ca",
+      },
+      {
+        id: 'pa_seed_joel_dinelle',
+        nom: 'Joel Dinelle — Royal LePage Performance',
+        industrie: 'agent_immo',
+        langue: 'francais',
+        telephone: '613-938-3860',
+        site_web: '',
+        notes: 'Royal LePage Performance. Cornwall.',
+      },
+      {
+        id: 'pa_seed_roch_marleau',
+        nom: 'Roch Marleau — Royal LePage Northern Life',
+        industrie: 'agent_immo',
+        langue: 'francais',
+        telephone: '705-753-3466',
+        site_web: '',
+        notes: 'Royal LePage Northern Life. North Bay / Nipissing Ouest.',
+      },
+      {
+        id: 'pa_seed_maisons_bruyere',
+        nom: 'Maisons Bruyère Homes — Philippe (constructeur)',
+        industrie: 'autre',
+        langue: 'francais',
+        telephone: '613-880-5393',
+        site_web: '',
+        notes: 'Constructeur de maisons — Maisons Bruyère Homes. Russell. Contact : Philippe.',
+      },
+    ],
+  },
 ]
 
 export async function seedPartners() {
