@@ -241,6 +241,29 @@ const BATCHES = [
       },
     ],
   },
+  {
+    key: 'seed_courtiers_v6',
+    partners: [
+      {
+        id: 'pa_seed_olesya_sokolova',
+        nom: 'Olesya Sokolova — Solid Rock Realty',
+        industrie: 'agent_immo',
+        langue: 'bilingue',
+        telephone: '343-202-1515',
+        site_web: '',
+        notes: 'Solid Rock Realty. 5 Corvus Court, Ottawa (Ontario) K2E 7Z4.',
+      },
+      {
+        id: 'pa_seed_phil_labbe',
+        nom: 'Phil Labbe — Royal LePage Integrity Realty',
+        industrie: 'agent_immo',
+        langue: 'francais',
+        telephone: '613-316-3707',
+        site_web: '',
+        notes: 'Royal LePage Integrity Realty. 2062 St Joseph Blvd, Orléans (Ontario) K1C 1E6.',
+      },
+    ],
+  },
 ]
 
 export async function seedPartners() {
