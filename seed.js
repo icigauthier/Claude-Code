@@ -264,6 +264,32 @@ const BATCHES = [
       },
     ],
   },
+  {
+    key: 'seed_courtiers_v7',
+    // Liste Ottawa (Marie-France Lavigne exclue : déjà présente). Langue par
+    // défaut : bilingue (à ajuster au besoin).
+    partners: [
+      { id: 'pa_seed_mathieu_bedirian', nom: 'Mathieu Bedirian — RE/MAX Hallmark Realty Group', industrie: 'agent_immo', langue: 'bilingue', telephone: '613-220-7168', site_web: '', notes: "RE/MAX Hallmark Realty Group. 4366 Innes Road, Ottawa (Ontario) K4A 3W3." },
+      { id: 'pa_seed_nicholas_labrosse', nom: 'Nicholas Labrosse — RE/MAX Hallmark Realty Group', industrie: 'agent_immo', langue: 'bilingue', telephone: '613-227-6409', site_web: '', notes: "RE/MAX Hallmark Realty Group. 4366 Innes Road, Ottawa (Ontario) K4A 3W3." },
+      { id: 'pa_seed_chris_lambert', nom: 'Chris Lambert — Innovation Realty Ltd.', industrie: 'agent_immo', langue: 'bilingue', telephone: '613-266-8350', site_web: '', notes: "Innovation Realty Ltd. 8221 Campeau Drive, Unit B, Kanata (Ontario) K2T 0A2." },
+      { id: 'pa_seed_erika_johnson', nom: 'Erika Johnson — CDN Global (Ottawa) Ltd.', industrie: 'agent_immo', langue: 'bilingue', telephone: '514-237-1612', site_web: '', notes: "CDN Global (Ottawa) Ltd. 1419 Carling Avenue, Unit 203, Ottawa (Ontario) K1Z 7L6." },
+      { id: 'pa_seed_nicole_rosenfeldt', nom: 'Nicole Rosenfeldt — Royal LePage Team Realty', industrie: 'agent_immo', langue: 'bilingue', telephone: '613-612-4663', site_web: '', notes: "Royal LePage Team Realty. 5536 Manotick Main St, Manotick (Ontario) K4M 1A7." },
+      { id: 'pa_seed_miguel_levesque', nom: 'Miguel Levesque — One Percent Realty Ltd.', industrie: 'agent_immo', langue: 'bilingue', telephone: '613-800-6069', site_web: '', notes: "One Percent Realty Ltd. 21 Ladouceur St, Ottawa (Ontario) K1Y 2S9." },
+      { id: 'pa_seed_mathieu_jacques', nom: 'Mathieu Jacques — EXP Realty', industrie: 'agent_immo', langue: 'bilingue', telephone: '343-596-9322', site_web: '', notes: "EXP Realty. 532 Limoges Road, Unit E, Limoges (Ontario) K0A 2M0." },
+      { id: 'pa_seed_kristine_haselsteiner', nom: 'Kristine Haselsteiner — Royal LePage Team Realty', industrie: 'agent_immo', langue: 'bilingue', telephone: '613-612-3871', site_web: '', notes: "Royal LePage Team Realty. 6081 Hazeldean Road, 12B, Ottawa (Ontario) K2S 1B9." },
+      { id: 'pa_seed_christopher_blenkiron', nom: 'Christopher Blenkiron — RE/MAX Hallmark Excellence Group Realty', industrie: 'agent_immo', langue: 'bilingue', telephone: '613-913-4665', site_web: '', notes: "RE/MAX Hallmark Excellence Group Realty. 4366 Innes Road, Unit 202, Ottawa (Ontario) K4A 3W3." },
+      { id: 'pa_seed_tony_giampietro', nom: 'Antonio (Tony) Giampietro — Royal LePage Integrity Realty', industrie: 'agent_immo', langue: 'bilingue', telephone: '613-854-1102', site_web: '', notes: "Royal LePage Integrity Realty. 2148 Carling Ave, Unit 5-6, Ottawa (Ontario) K2A 1H1." },
+      { id: 'pa_seed_ray_smiley', nom: 'Ray Smiley — RE/MAX Hallmark Realty Group', industrie: 'agent_immo', langue: 'bilingue', telephone: '613-818-1819', site_web: '', notes: "RE/MAX Hallmark Realty Group. 344 O'Connor Street, Ottawa (Ontario) K2P 1W1." },
+      { id: 'pa_seed_thierno_diallo', nom: 'Thierno Diallo — Royal LePage Integrity Realty', industrie: 'agent_immo', langue: 'bilingue', telephone: '613-799-0005', site_web: '', notes: "Royal LePage Integrity Realty. 2148 Carling Ave, Unit 5-6, Ottawa (Ontario) K2A 1H1." },
+      { id: 'pa_seed_tamara_villanyi_bokor', nom: 'Tamara Villanyi Bokor — Royal LePage Integrity Realty', industrie: 'agent_immo', langue: 'bilingue', telephone: '613-796-9436', site_web: '', notes: "Royal LePage Integrity Realty. 2148 Carling Ave, Unit 5-6, Ottawa (Ontario) K2A 1H1." },
+      { id: 'pa_seed_jeff_matheson', nom: 'Jeff Matheson — EXP Realty', industrie: 'agent_immo', langue: 'bilingue', telephone: '613-699-8163', site_web: '', notes: "EXP Realty. 343 Preston Street, 11th Floor, Ottawa (Ontario) K1S 1N4." },
+      { id: 'pa_seed_irene_bilinski', nom: 'Irene Bilinski — RE/MAX Hallmark Realty Group', industrie: 'agent_immo', langue: 'bilingue', telephone: '613-858-1151', site_web: '', notes: "RE/MAX Hallmark Realty Group. 4366 Innes Road, Ottawa (Ontario) K4A 3W3." },
+      { id: 'pa_seed_steve_sicard', nom: 'Steve Sicard — RE/MAX Hallmark Realty Group', industrie: 'agent_immo', langue: 'bilingue', telephone: '613-853-5807', site_web: '', notes: "RE/MAX Hallmark Realty Group. 4366 Innes Road, Ottawa (Ontario) K4A 3W3." },
+      { id: 'pa_seed_yasser_abed', nom: 'Yasser Abed — EXP Realty', industrie: 'agent_immo', langue: 'bilingue', telephone: '613-266-6373', site_web: '', notes: "EXP Realty. 343 Preston Street, 11th Floor, Ottawa (Ontario) K1S 1N4." },
+      { id: 'pa_seed_roch_stgeorges', nom: 'Roch St-Georges — EXIT Realty Matrix', industrie: 'agent_immo', langue: 'bilingue', telephone: '613-889-7732', site_web: '', notes: "EXIT Realty Matrix. 2131 St. Joseph Blvd, Ottawa (Ontario) K1C 1E7." },
+      { id: 'pa_seed_melanie_ebbs', nom: 'Melanie Ebbs — EXP Realty', industrie: 'agent_immo', langue: 'bilingue', telephone: '819-665-4843', site_web: '', notes: "EXP Realty. 424 Catherine St, Unit 200, Ottawa (Ontario) K1R 5T8." },
+    ],
+  },
 ]
 
 export async function seedPartners() {
