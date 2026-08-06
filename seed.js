@@ -290,6 +290,17 @@ const BATCHES = [
       { id: 'pa_seed_melanie_ebbs', nom: 'Melanie Ebbs — EXP Realty', industrie: 'agent_immo', langue: 'bilingue', telephone: '819-665-4843', site_web: '', notes: "EXP Realty. 424 Catherine St, Unit 200, Ottawa (Ontario) K1R 5T8." },
     ],
   },
+  {
+    key: 'seed_courtiers_v8',
+    // Patrick Lamesse, Phil Labbe et Marie-Jo Shapiro exclus (déjà présents).
+    partners: [
+      { id: 'pa_seed_moe_egeh', nom: 'Moe Egeh — Right At Home Realty', industrie: 'agent_immo', langue: 'bilingue', telephone: '613-769-7755', site_web: '', notes: "Right At Home Realty. 14 Chamberlain Ave, Suite 101, Ottawa (Ontario) K1S 1V9." },
+      { id: 'pa_seed_ryan_newell', nom: 'Ryan Newell — Bennett Property Shop Realty', industrie: 'agent_immo', langue: 'bilingue', telephone: '613-852-1880', site_web: '', notes: "Bennett Property Shop Realty. 1194 Carp Rd, Ottawa (Ontario) K2S 1B9." },
+      { id: 'pa_seed_steve_hamre', nom: 'Steve Hamre — RE/MAX Prime Properties', industrie: 'agent_immo', langue: 'bilingue', telephone: '613-880-1122', site_web: '', notes: "RE/MAX Prime Properties. 485 Industrial Ave, Ottawa (Ontario) K1G 0Z1." },
+      { id: 'pa_seed_nic_hamre', nom: 'Nic Hamre — RE/MAX Prime Properties', industrie: 'agent_immo', langue: 'bilingue', telephone: '613-899-7171', site_web: '', notes: "RE/MAX Prime Properties. 485 Industrial Ave, Ottawa (Ontario) K1G 0Z1." },
+      { id: 'pa_seed_emerik_paiement', nom: 'Emerik Paiement — EXP Realty', industrie: 'agent_immo', langue: 'francais', telephone: '866-530-7737', site_web: '', notes: "EXP Realty. 343 Preston Street, 11th Floor, Ottawa (Ontario) K1S 1N4." },
+    ],
+  },
 ]
 
 export async function seedPartners() {
