@@ -200,6 +200,47 @@ const BATCHES = [
       },
     ],
   },
+  {
+    key: 'seed_courtiers_v5',
+    partners: [
+      {
+        id: 'pa_seed_marie_france_lavigne',
+        nom: 'Marie-France Lavigne — RE/MAX Delta Realty Team',
+        industrie: 'agent_immo',
+        langue: 'francais',
+        telephone: '613-301-3213',
+        site_web: '',
+        notes: 'RE/MAX Delta Realty Team. 2316 St. Joseph Blvd, Ottawa (Ontario) K1C 1E8.',
+      },
+      {
+        id: 'pa_seed_patrick_lamesse',
+        nom: 'Patrick Lamesse — Sutton Group Ottawa Realty',
+        industrie: 'agent_immo',
+        langue: 'francais',
+        telephone: '613-912-3457',
+        site_web: '',
+        notes: 'Sutton Group - Ottawa Realty. 300 Richmond Rd, Unit 400, Ottawa (Ontario) K1Z 6X6.',
+      },
+      {
+        id: 'pa_seed_bruno_gamache',
+        nom: 'Bruno Gamache — Royal LePage Integrity Realty',
+        industrie: 'agent_immo',
+        langue: 'francais',
+        telephone: '613-878-3310',
+        site_web: '',
+        notes: 'Royal LePage Integrity Realty. 2148 Carling Ave, Unit 5-6, Ottawa (Ontario) K2A 1H1.',
+      },
+      {
+        id: 'pa_seed_marie_jo_shapiro',
+        nom: 'Marie-Jo Shapiro — RE/MAX Delta Realty',
+        industrie: 'agent_immo',
+        langue: 'francais',
+        telephone: '613-716-7653',
+        site_web: '',
+        notes: 'RE/MAX Delta Realty. 1863 Laurier St, PO Box 845, Rockland (Ontario) K4K 1L5.',
+      },
+    ],
+  },
 ]
 
 export async function seedPartners() {
