@@ -78,6 +78,7 @@ export const PARTNER_STATUTS = [
   { key: 'a_contacter', label: 'À contacter', color: '#b8894b' },
   { key: 'relancer', label: 'Relancer', color: '#4f8cae' },
   { key: 'gagne', label: 'Partenaire gagné', color: '#2e7d5b' },
+  { key: 'non_interesse', label: 'Non intéressé', color: '#98918a' },
 ]
 
 export const EVENT_TYPES = [
