@@ -7,7 +7,7 @@ import { getNews } from './news.js'
 import * as netlify from './netlify.js'
 import { readData, writeData } from './storage.js'
 import { setupAuth } from './auth.js'
-import { seedPartners } from './seed.js'
+import { initPartners } from './seed.js'
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url))
 const PORT = process.env.PORT || 4321
@@ -693,5 +693,5 @@ app.listen(PORT, () => {
   console.log(`\n  CRM iciGauthier en marche  →  http://localhost:${PORT}\n`)
 })
 
-// Ajoute une seule fois les partenaires « semés » (idempotent).
-seedPartners()
+// Réinitialise une seule fois le carnet de partenaires (à la demande).
+initPartners()
