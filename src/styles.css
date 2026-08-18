@@ -3,42 +3,46 @@
    Émeraude profond + or laiton · inspiration Linear/Stripe/Notion
    ============================================================ */
 :root {
-  /* Surfaces (thème clair — couleurs du site iciGauthier) */
-  --bg: #efe9de;          /* paper (cream du site) */
-  --bg-2: #e7e0d0;        /* colonnes kanban, un cran plus profond */
-  --panel: #fdfbf6;       /* carte blanc chaud */
-  --panel-soft: #f4efe3;  /* insets / champs / en-têtes */
+  /* Surfaces (thème sombre — espresso profond) */
+  --bg: #14100b;          /* fond principal */
+  --bg-2: #1b1610;        /* colonnes kanban */
+  --panel: #221b13;       /* cartes */
+  --panel-soft: #2a2318;  /* insets / champs / en-têtes */
 
-  /* Encre / texte */
-  --ink: #191309;         /* ink du site */
-  --ink-2: #6b6156;       /* taupe du site */
-  --ink-3: #9a9082;
+  /* Encre / texte (clair sur foncé) */
+  --ink: #f2ebdd;
+  --ink-2: #b7ac98;
+  --ink-3: #8b8172;
 
   /* Lignes */
-  --line: #e2dbc9;
-  --line-2: #ebe5d6;
+  --line: #362e21;
+  --line-2: #2b2418;
 
-  /* Vert de marque (pin du site) */
-  --green: #173b34;
-  --green-600: #0f2a25;
-  --green-700: #0a1f1b;
-  --forest: #1c1710;      /* sidebar : espresso du site */
-  --forest-2: #14110d;
+  /* Vert de marque */
+  --green: #1f6b4a;
+  --green-600: #175338;
+  --green-700: #0f3d29;
+  --forest: #0f0c08;      /* sidebar : espresso très foncé */
+  --forest-2: #0a0806;
 
-  /* Or / laiton (brass du site) */
-  --gold: #b8894b;
-  --gold-600: #94672c;    /* laiton foncé, lisible en texte sur clair */
-  --gold-soft: #f3ead8;
-  --gold-line: #e5d2ab;
+  /* Or / laiton (plus lumineux sur sombre) */
+  --gold: #cf9f5e;
+  --gold-600: #b8894b;
+  --gold-soft: #2c2317;
+  --gold-line: #4a3c26;
 
-  --danger: #a5402c;
-  --danger-soft: #f6e5df;
+  /* Montants : positif / négatif (lisibles sur sombre) */
+  --pos: #4cc38a;
+  --neg: #e37b60;
 
-  /* Ombres chaudes en couches */
-  --sh-1: 0 1px 2px rgba(25, 19, 9, 0.05), 0 1px 3px rgba(25, 19, 9, 0.04);
-  --sh-2: 0 1px 2px rgba(25, 19, 9, 0.05), 0 10px 26px -14px rgba(25, 19, 9, 0.22);
-  --sh-3: 0 2px 6px rgba(25, 19, 9, 0.07), 0 24px 50px -22px rgba(25, 19, 9, 0.28);
-  --sh-pop: 0 30px 70px -25px rgba(25, 19, 9, 0.5);
+  --danger: #e37b60;
+  --danger-soft: #3a2119;
+
+  /* Ombres (sur sombre) */
+  --sh-1: 0 1px 2px rgba(0, 0, 0, 0.4);
+  --sh-2: 0 1px 2px rgba(0, 0, 0, 0.35), 0 12px 28px -16px rgba(0, 0, 0, 0.6);
+  --sh-3: 0 2px 6px rgba(0, 0, 0, 0.4), 0 26px 54px -24px rgba(0, 0, 0, 0.72);
+  --sh-pop: 0 30px 80px -25px rgba(0, 0, 0, 0.82);
 
   /* Rayons */
   --r-sm: 10px;
@@ -51,15 +55,15 @@
   --dur: 0.25s;
 
   /* Focus */
-  --ring: 0 0 0 3px rgba(23, 59, 52, 0.16);
-  --ring-gold: 0 0 0 3px rgba(184, 137, 75, 0.22);
+  --ring: 0 0 0 3px rgba(76, 195, 138, 0.25);
+  --ring-gold: 0 0 0 3px rgba(207, 159, 94, 0.28);
 
   --font: 'Hanken Grotesk', system-ui, -apple-system, sans-serif;
   --mono: 'Space Mono', ui-monospace, monospace;
 }
 
 :root {
-  color-scheme: light;
+  color-scheme: dark;
 }
 
 * {

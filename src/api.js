@@ -58,6 +58,10 @@ export const api = {
     req(`/api/finances/${id}`, { method: 'PATCH', headers: JSON_HEADERS, body: JSON.stringify(patch) }),
   removeFinance: (id) => req(`/api/finances/${id}`, { method: 'DELETE' }),
 
+  // Pièce jointe (facture : image / PDF) → renvoie { id, name, type }
+  uploadFile: (payload) =>
+    req('/api/files', { method: 'POST', headers: JSON_HEADERS, body: JSON.stringify(payload) }),
+
   // Outlook
   outlookStatus: () => req('/api/outlook/status'),
   outlookEvents: (start, end) =>

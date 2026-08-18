@@ -7,7 +7,6 @@ import Board from './components/Board.jsx'
 import Agenda from './components/Agenda.jsx'
 import Todo from './components/Todo.jsx'
 import Finance from './components/Finance.jsx'
-import News from './components/News.jsx'
 import Contacts from './components/Contacts.jsx'
 import Partners from './components/Partners.jsx'
 import Performance from './components/Performance.jsx'
@@ -34,7 +33,6 @@ const NAV = [
   { key: 'contacts', label: 'Contacts', icon: '☰' },
   { key: 'partners', label: 'Partenaires', icon: '⤳' },
   { key: 'finance', label: 'Finance', icon: '$' },
-  { key: 'news', label: 'Nouvelles', icon: '📰' },
   { key: 'performance', label: 'Performance', icon: '📈' },
 ]
 
@@ -496,8 +494,6 @@ export default function App() {
             />
           ) : view === 'finance' ? (
             <Finance finances={finances} onAdd={addFinance} onDelete={deleteFinance} />
-          ) : view === 'news' ? (
-            <News />
           ) : view === 'contacts' ? (
             <Contacts clients={filtered} onOpen={setEditingClient} />
           ) : view === 'partners' ? (

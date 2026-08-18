@@ -121,3 +121,39 @@ export async function kvDel(key) {
     /* déjà absent */
   }
 }
+
+/* ---------- Fichiers joints (factures : image / PDF) ----------
+   Stockés à part (collection « files » en ligne, dossier data/files/ en local)
+   pour ne pas alourdir le document principal. rec = { name, type, data(base64) }. */
+export async function fileSet(id, rec) {
+  if (usingCloud) {
+    await (await getDb()).collection('files').updateOne({ _id: id }, { $set: rec }, { upsert: true })
+    return
+  }
+  const dir = path.join(DATA_DIR, 'files')
+  await fs.mkdir(dir, { recursive: true })
+  await fs.writeFile(path.join(dir, id + '.json'), JSON.stringify(rec), 'utf8')
+}
+
+export async function fileGet(id) {
+  if (usingCloud) {
+    return await (await getDb()).collection('files').findOne({ _id: id })
+  }
+  try {
+    return JSON.parse(await fs.readFile(path.join(DATA_DIR, 'files', id + '.json'), 'utf8'))
+  } catch {
+    return null
+  }
+}
+
+export async function fileDel(id) {
+  if (usingCloud) {
+    await (await getDb()).collection('files').deleteOne({ _id: id })
+    return
+  }
+  try {
+    await fs.unlink(path.join(DATA_DIR, 'files', id + '.json'))
+  } catch {
+    /* déjà absent */
+  }
+}

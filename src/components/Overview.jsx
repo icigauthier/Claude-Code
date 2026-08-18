@@ -236,13 +236,13 @@ export default function Overview({
           </header>
           <div className="ov-stats">
             <div className="ov-stat">
-              <span className="ov-stat__num" style={{ color: '#173b34' }}>
+              <span className="ov-stat__num" style={{ color: 'var(--pos)' }}>
                 {fmtMoney(fin.revenus)}
               </span>
               <span className="ov-stat__lbl">Revenus</span>
             </div>
             <div className="ov-stat">
-              <span className="ov-stat__num" style={{ color: '#a5402c' }}>
+              <span className="ov-stat__num" style={{ color: 'var(--neg)' }}>
                 {fmtMoney(fin.depenses)}
               </span>
               <span className="ov-stat__lbl">Dépenses</span>
@@ -250,7 +250,7 @@ export default function Overview({
             <div className="ov-stat">
               <span
                 className="ov-stat__num"
-                style={{ color: fin.net < 0 ? '#a5402c' : 'var(--ink)' }}
+                style={{ color: fin.net < 0 ? 'var(--neg)' : 'var(--ink)' }}
               >
                 {fmtMoney(fin.net)}
               </span>

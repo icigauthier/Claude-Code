@@ -5,7 +5,7 @@ import { fileURLToPath } from 'node:url'
 import * as outlook from './outlook.js'
 import { getNews } from './news.js'
 import * as netlify from './netlify.js'
-import { readData, writeData } from './storage.js'
+import { readData, writeData, fileSet, fileGet } from './storage.js'
 import { setupAuth } from './auth.js'
 import { initPartners } from './seed.js'
 
@@ -27,7 +27,7 @@ function markPartnerWon(data, partnerId) {
 
 /* ---------- App ---------- */
 const app = express()
-app.use(express.json({ limit: '2mb' }))
+app.use(express.json({ limit: '12mb' })) // marge pour les factures (image/PDF) en base64
 
 // Connexion sécurisée (active en ligne dès qu'un mot de passe est défini,
 // transparente sur ton PC en local).
@@ -214,6 +214,27 @@ app.delete('/api/finances/:id', async (req, res) => {
   if (data.finances.length === before) return res.status(404).json({ error: 'Introuvable' })
   await writeData(data)
   res.json({ ok: true })
+})
+
+/* ---- Fichiers joints (factures : image / PDF) ---- */
+app.post('/api/files', async (req, res) => {
+  const { name, type, data } = req.body || {}
+  if (!data || !type) return res.status(400).json({ error: 'Fichier manquant.' })
+  if (!/^image\/|^application\/pdf$/.test(type)) {
+    return res.status(400).json({ error: 'Type non supporté : image ou PDF seulement.' })
+  }
+  const id = newId('fl_')
+  await fileSet(id, { name: String(name || 'facture').slice(0, 200), type, data })
+  res.status(201).json({ id, name: name || 'facture', type })
+})
+
+app.get('/api/files/:id', async (req, res) => {
+  const rec = await fileGet(req.params.id)
+  if (!rec || !rec.data) return res.status(404).send('Introuvable')
+  res.setHeader('Content-Type', rec.type || 'application/octet-stream')
+  const safe = String(rec.name || 'facture').replace(/[^\w.\- ]+/g, '_')
+  res.setHeader('Content-Disposition', `inline; filename="${safe}"`)
+  res.send(Buffer.from(rec.data, 'base64'))
 })
 
 /* ---- Journal / blog (écrit dans le contenu du SITE web) ---- */

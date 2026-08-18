@@ -63,7 +63,7 @@ export default function Todo({
         <span className="todo__text">
           {t.text}
           {t.due && (
-            <small style={{ marginLeft: 6, color: overdue ? '#b3452f' : 'var(--ink-3)' }}>
+            <small style={{ marginLeft: 6, color: overdue ? 'var(--neg)' : 'var(--ink-3)' }}>
               · {fmtDate(t.due)}
             </small>
           )}
